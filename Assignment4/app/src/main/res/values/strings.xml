@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">FirstApp</string>
+    <string name="name">Alex Meier</string>
+    <string name="touch">Touch The  Screen!</string>
+    <string name="PersonalInfoTitle">Personal Info</string>
+    <string name="homeTown">
+        I grew up in windham NH, near Nashua.  Right now I live in Lowell MA.  I would like to be
+        in hawaii on the beach.
+    </string>
+    <string name="weatherTitle">Weather</string>
+    <string name="weatherLowell">Lowell - Overcast and snowy, 93 degrees</string>
+    <string name="weatherWindham">Windham - Sunny and rainy, 91 degrees</string>
+    <string name="weatherLoading">Loading Weather...   </string>
+    <string name="hobbiesTitle">Hobbies</string>
+    <string name="hobbiesBody">
+        My main hobby is making music.  My goal for this hobby is to someday
+    have music on Spotify.  To showcase this, the following is an inbeded player for some of my music
+    </string>
+    <string name="resumeButtonText">View Resume</string>
+    <string name="PorgfolioMeTitle">Me</string>
+    <string name="PortfolioParentsTitle">Parents</string>
+    <string name="PortfolioTitle">Investment Portfolio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

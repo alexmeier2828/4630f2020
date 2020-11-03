@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="StockNames">
+        <item>APPL</item>
+        <item>GOOGL</item>
+        <item>DOWJ</item>
+        <item>WSC</item>
+        <item>MSFT</item>
+    </string-array>
+    <string-array name="StockPrices">
+        <item>$10</item>
+        <item>$10</item>
+        <item>$10</item>
+        <item>$20.02</item>
+        <item>$10</item>
+    </string-array>
+    <string name="StockNamePlaceholder">STCK</string>
+    <string name="StockPricePlaceholder">$10.00</string>
+</resources>
