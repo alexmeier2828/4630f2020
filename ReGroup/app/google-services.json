@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "377407264700",
+    "firebase_url": "https://regroup-31a83.firebaseio.com",
+    "project_id": "regroup-31a83",
+    "storage_bucket": "regroup-31a83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377407264700:android:14c3086264ec861508bdb9",
+        "android_client_info": {
+          "package_name": "com.AlexMeier.regroup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377407264700-mjfivrkcb2v548pij6o6n5ja5oblbg6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLiWghzsA2nl1I6srl4kQjW549NrJEUec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377407264700-mjfivrkcb2v548pij6o6n5ja5oblbg6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

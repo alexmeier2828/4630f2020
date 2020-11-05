@@ -1,4 +1,4 @@
-package com.example.regroup;
+package com.AlexMeier.regroup;
 
 import org.junit.Test;
 

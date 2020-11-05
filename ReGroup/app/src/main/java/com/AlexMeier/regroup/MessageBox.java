@@ -1,4 +1,4 @@
-package com.example.regroup;
+package com.AlexMeier.regroup;
 
 import android.content.Context;
 import android.content.res.TypedArray;
