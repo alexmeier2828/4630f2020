@@ -52,13 +52,9 @@ public class SignInActivity extends AppCompatActivity {
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 //if user is signed in, we call a helper method to save the user details to Firebase
                 if (firebaseUser != null) {
-                    // User is signed in
-                    // you could place other firebase code
-                    //logic to save the user details to Firebase
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
+                    //login failed
                 } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+
                 }
 
             }
@@ -89,14 +85,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
@@ -106,11 +99,9 @@ public class SignInActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            // Signed in successfully, show authenticated UI.
+            // Signed in successfully
             updateUI(account);
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             updateUI(null);
         }
@@ -125,6 +116,8 @@ public class SignInActivity extends AppCompatActivity {
 
         }
         else {
+
+            //switch intent to main menu
             android.content.Intent intent = new android.content.Intent(this, MainMenu.class);
             startActivity(intent);
         }
