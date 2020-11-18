@@ -8,6 +8,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.AlexMeier.regroup.messaging.ChatRoom;
+
 public class MainMenu extends AppCompatActivity {
 
     @Override
