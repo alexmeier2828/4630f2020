@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -28,14 +29,14 @@ import io.reactivex.disposables.Disposable;
 
 public abstract class GroupChatManager {
     private final static String TAG = "GROUP_CHAT_MANAGER";
-    private String[] userList;
+    private ArrayList<String> userList;
     private String groupID;
     private MyFirebaseMessagingService messagingService;
     private FirebaseUser user;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GroupChatManager(Context context, GroupChatResponse groupChatResponse) {
-        userList = groupChatResponse.getMembers().clone();  //make copy of userlist
+        userList = groupChatResponse.getMembers();  //make copy of userlist
         groupID = groupChatResponse.getName();
         //subscribe to group
 
@@ -100,7 +101,7 @@ public abstract class GroupChatManager {
 
         try {
             JSONObject messageJson = new JSONObject(messageString);
-            this.userList = (String[])messageJson.get("members");
+            this.userList = (ArrayList<String>) messageJson.get("members");
             Log.d(TAG, userList.toString());
         } catch (Exception e){
             Log.e(TAG, e.toString());

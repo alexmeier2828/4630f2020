@@ -16,4 +16,9 @@
     <string name="web_client_id">377407264700-mjfivrkcb2v548pij6o6n5ja5oblbg6g.apps.googleusercontent.com</string>
     <string name="google_sign_in">Sign in with Google</string>
     <string name="welcome_message">Welcome to ReGroup!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Placeholder text for message box -->
+    <string name="message_fragment_placeholder_text">Placeholder Text</string>
 </resources>

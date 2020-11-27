@@ -12,6 +12,7 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,16 +32,16 @@ public class GroupChatAPI {
                 .continueWith(new Continuation<HttpsCallableResult, GroupChatResponse>() {
                     @Override
                     public GroupChatResponse then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                        String result = (String) task.getResult().getData();
-                        String[] userList = {};
+                        HashMap resultMap = (HashMap) task.getResult().getData();
+                        ArrayList<String> userList = new ArrayList();
                         int size = 0;
                         String name = "error";
 
                         try {
-                            JSONObject messageJson = new JSONObject(result);
-                            userList = (String[])messageJson.get("members");
-                            name = (String)messageJson.get("name");
-                            size = (int)messageJson.get("size");
+
+                            userList = (ArrayList<String>)resultMap.get("members");
+                            name = (String)resultMap.get("name");
+                            size = (int)resultMap.get("size");
                             Log.d(TAG, userList.toString());
 
 

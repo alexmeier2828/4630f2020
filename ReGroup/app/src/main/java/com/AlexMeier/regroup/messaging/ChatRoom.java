@@ -1,14 +1,22 @@
 package com.AlexMeier.regroup.messaging;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.adapter.FragmentViewHolder;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,12 +35,14 @@ import io.reactivex.disposables.Disposable;
 
 public class ChatRoom extends AppCompatActivity {
     private static final String TAG = "CHAT_ROOM";
+    private int scrollerID;
     FirebaseUser user;
     FirebaseAuth mAuth;
     GroupChatManager groupChatManager;
 
     GroupChatResponse currentGroup;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +68,16 @@ public class ChatRoom extends AppCompatActivity {
 
             }
         });
+
+//        scrollerID = View.generateViewId();
+//        FragmentContainerView fragmentContainerView = new FragmentContainerView(this);
+//        fragmentContainerView.setId(scrollerID);
+//        fragmentContainerView.
+//        LinearLayout messageBoard = findViewById(R.id.message_board);
+//        messageBoard.addView(fragmentContainerView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void sendMessage(View view){
         //read text from message editor
         EditText editText = findViewById(R.id.message);
@@ -74,23 +92,12 @@ public class ChatRoom extends AppCompatActivity {
 
 
     //TODO set message board to lock until user has been subscribed to a group
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void addMessageToBoard(Message message){
-        TextView textView = new TextView(this);
         String messageText = message.getMessageBody();
-        textView.setText(messageText);
-
-        //determine message style
-        if(message.isUserIsSender()){
-            textView.setGravity(Gravity.RIGHT);
-        } else {
-            textView.setGravity(Gravity.LEFT);
-        }
-
-        textView.setTextSize(32);
-        textView.setPadding(12, 12, 12, 12 );
-        //MessageBox messageBox = new MessageBox(this, messageText);
-        LinearLayout messageBoard = findViewById(R.id.message_board);
-        messageBoard.addView(textView);
+        MessageFragment messageFragment = MessageFragment.newInstance(message.getMessageAuthor(), messageText, message.isUserIsSender());
+        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, messageFragment);
+        transaction.commit();
     }
 
 
@@ -98,6 +105,7 @@ public class ChatRoom extends AppCompatActivity {
     private void subscribeToChat(GroupChatResponse group){
         //subscribe to chat message topic
         groupChatManager = new GroupChatManager(this, group) {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onMessageReceived(Message message) {
                 addMessageToBoard(message);

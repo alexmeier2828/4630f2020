@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".messaging.MessageFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/message_card"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="#DCCECE"
+        app:cardCornerRadius="10dp"
+        app:contentPadding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/message_sender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/message_fragment_placeholder_text"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/message_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/message_fragment_placeholder_text" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>
