@@ -21,4 +21,8 @@
 
     <!-- Placeholder text for message box -->
     <string name="message_fragment_placeholder_text">Placeholder Text</string>
+
+    <!-- Profile Placeholder text-->
+    <string name="profile_placeholder_text">User Name</string>
+    <string name="profile_body_placeholder_text">This is where information about the user will go</string>
 </resources>

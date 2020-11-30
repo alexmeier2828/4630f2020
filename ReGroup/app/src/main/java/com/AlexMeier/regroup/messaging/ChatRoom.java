@@ -68,13 +68,6 @@ public class ChatRoom extends AppCompatActivity {
 
             }
         });
-
-//        scrollerID = View.generateViewId();
-//        FragmentContainerView fragmentContainerView = new FragmentContainerView(this);
-//        fragmentContainerView.setId(scrollerID);
-//        fragmentContainerView.
-//        LinearLayout messageBoard = findViewById(R.id.message_board);
-//        messageBoard.addView(fragmentContainerView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
