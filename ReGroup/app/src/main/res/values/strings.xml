@@ -25,4 +25,6 @@
     <!-- Profile Placeholder text-->
     <string name="profile_placeholder_text">User Name</string>
     <string name="profile_body_placeholder_text">This is where information about the user will go</string>
+    <string name="profile_menu_edit_body">Edit Profile</string>
+    <string name="profile_menu_change_picture">Change Profile Picture</string>
 </resources>

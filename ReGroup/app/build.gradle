@@ -59,12 +59,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     // Declare the dependencies for any other desired Firebase products
-    // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-functions'
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
 
 
 
@@ -72,7 +72,7 @@ dependencies {
     implementation "sdk.chat:firestream:5.0.16"
     implementation "sdk.chat:firestream-realtime:5.0.16"
 
-
+    //fragment
     implementation "androidx.fragment:fragment:1.2.5"
 
 
