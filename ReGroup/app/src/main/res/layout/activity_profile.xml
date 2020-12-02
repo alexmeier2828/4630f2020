@@ -9,7 +9,7 @@
     tools:context=".profile.ProfileActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile_picture"
         android:layout_width="match_parent"
         android:layout_height="403dp"
         android:background="#4C4C4C"

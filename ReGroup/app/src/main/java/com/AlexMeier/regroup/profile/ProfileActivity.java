@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,10 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.AlexMeier.regroup.R;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -31,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth; //user information
     private String userName;
     private String userProfileBody;
+    private Uri profilePictureUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,13 @@ public class ProfileActivity extends AppCompatActivity {
             profileNameTextView.setText(userName);
             final TextView profileBodyTextView = findViewById(R.id.profile_body_text);
             profileBodyTextView.setText(userProfileBody);
+
+            //if it exists show profile picture
+            StorageReference imageReference = profileData.getImageReference();
+
+            if(imageReference != null){
+                Glide.with(this).load(imageReference).into((ImageView)findViewById(R.id.profile_picture));
+            }
         });
     }
 
@@ -94,10 +107,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     /**
      * Updates profile picture from image uri
-     * @param imageURI
+     * @param imageUri
      */
-    private void updateProfilePicture(Uri imageURI) {
+    private void updateProfilePicture(Uri imageUri) {
+        //update local reference
+        profilePictureUri = imageUri;
+        ImageView profilePicture = findViewById(R.id.profile_picture);
+        profilePicture.setImageURI(imageUri);
 
+        //update server version
+        ProfileUtil.updateCurrentUserProfilePicture(imageUri, new ProfileData(userName, userProfileBody));
     }
 
     /**

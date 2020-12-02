@@ -12,19 +12,19 @@
     <string name="login">Login</string>
     <string name="createAccount">Create Account</string>
 
-
+    <!-- Firebase constants-->
     <string name="web_client_id">377407264700-mjfivrkcb2v548pij6o6n5ja5oblbg6g.apps.googleusercontent.com</string>
+    <string name="storage_bucket">https://console.firebase.google.com/project/regroup-31a83/storage/regroup-31a83.appspot.com/files</string>
+    <!--Sign in-->
     <string name="google_sign_in">Sign in with Google</string>
     <string name="welcome_message">Welcome to ReGroup!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Placeholder text for message box -->
-    <string name="message_fragment_placeholder_text">Placeholder Text</string>
+    <string name="message_fragment_placeholder_text">Loading Message...</string>
 
     <!-- Profile Placeholder text-->
-    <string name="profile_placeholder_text">User Name</string>
-    <string name="profile_body_placeholder_text">This is where information about the user will go</string>
+    <string name="profile_placeholder_text">Loading Username...</string>
+    <string name="profile_body_placeholder_text">Loading profile...</string>
     <string name="profile_menu_edit_body">Edit Profile</string>
     <string name="profile_menu_change_picture">Change Profile Picture</string>
 </resources>
