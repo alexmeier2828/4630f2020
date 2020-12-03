@@ -27,4 +27,6 @@
     <string name="profile_body_placeholder_text">Loading profile...</string>
     <string name="profile_menu_edit_body">Edit Profile</string>
     <string name="profile_menu_change_picture">Change Profile Picture</string>
+    <string name="send_button">Send</string>
+    <string name="regroup_button">Regroup</string>
 </resources>
