@@ -2,18 +2,21 @@ package com.AlexMeier.regroup.messaging;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,10 +26,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ChatRoom extends AppCompatActivity {
+public class ChatRoom extends FragmentActivity {
     private static final String TAG = "CHAT_ROOM";
     private int scrollerID;
-    private boolean DEBUG_MODE_ON = false;
     FirebaseUser user;
     FirebaseAuth mAuth;
     GroupChatManager groupChatManager;
@@ -39,7 +41,6 @@ public class ChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
 
-        final Button new_group = findViewById(R.id.send);
         //initialize conversation
         mAuth = FirebaseAuth.getInstance();
         GroupChatAPI.joinGroup(mAuth).addOnCompleteListener(new OnCompleteListener<GroupChatResponse>() {
@@ -49,6 +50,8 @@ public class ChatRoom extends AppCompatActivity {
                     Log.e(TAG, "Failed to get group chat response: " + task.getException());
                 }else{
                     subscribeToChat(task.getResult());
+                    ProgressBar spinner = findViewById(R.id.spinner);
+                    spinner.setVisibility(View.GONE);
                 }
 
             }
@@ -70,7 +73,25 @@ public class ChatRoom extends AppCompatActivity {
                     }
                 }
         );
-    }
+        messageEditor.setImeOptions(EditorInfo.IME_ACTION_SEND);
+        messageEditor.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
+//
+//        //bugfix - prime the back stack -- no idea why this is required
+//        Fragment fragment = MessageFragment.newInstance("", "", true);
+//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
+//        fragment = message_spacer.newInstance("1", "");
+//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
+//        fragment = message_spacer.newInstance("2", "");
+//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
+//        fragment = message_spacer.newInstance("3", "");
+//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
+//        fragment = message_spacer.newInstance("4", "");
+//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
+////
+//         this.getSupportFragmentManager().executePendingTransactions();
+////        findViewById(R.id.fragment_holder)
+     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void sendMessage(){
@@ -80,7 +101,7 @@ public class ChatRoom extends AppCompatActivity {
         editText.setText("");
 
         //do not send empty message
-        if(messageText != ""){
+        if(!messageText.isEmpty()){
             //post message to board
             addMessageToBoard(new Message(messageText, "You", true));
 
@@ -100,9 +121,9 @@ public class ChatRoom extends AppCompatActivity {
     public void addMessageToBoard(Message message){
         String messageText = message.getMessageBody();
         MessageFragment messageFragment = MessageFragment.newInstance(message.getMessageAuthor(), messageText, message.isUserIsSender());
-        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, messageFragment);
+        FragmentManager fragmentManager= this.getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction().add(R.id.fragment_holder, messageFragment);
         transaction.commit();
-
         //scroll to bottom of scroll view with smooth animation
         ScrollView scrollView = findViewById(R.id.chatroom_scroll);
         LinearLayout scrollLinearLayout = findViewById(R.id.fragment_holder);

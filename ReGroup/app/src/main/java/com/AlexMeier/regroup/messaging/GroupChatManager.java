@@ -27,8 +27,12 @@ import firestream.chat.namespace.Fire;
 import firestream.chat.realtime.RealtimeService;
 import io.reactivex.disposables.Disposable;
 
+/**
+ * Manages sending, and recieving messages from server
+ */
 public abstract class GroupChatManager {
     private final static String TAG = "GROUP_CHAT_MANAGER";
+    private boolean DEBUG_MODE_ON = false;                  //setting to true enables server echo
     private ArrayList<String> userList;
     private String groupID;
     private MyFirebaseMessagingService messagingService;
@@ -78,10 +82,16 @@ public abstract class GroupChatManager {
 
     }
 
+    /**
+     * Sends message to registered users in group chat
+     * @param messageBody
+     */
     public void sendMessage(String messageBody){
         for (String userID:userList
              ) {
-            Fire.stream().sendMessageWithText(userID, messageBody).subscribe();
+            if(!DEBUG_MODE_ON && !userID.equals(user.getUid())){
+                Fire.stream().sendMessageWithText(userID, messageBody).subscribe();
+            }
         }
     }
 
@@ -102,6 +112,11 @@ public abstract class GroupChatManager {
         try {
             JSONObject messageJson = new JSONObject(messageString);
             this.userList = (ArrayList<String>) messageJson.get("members");
+            if(!DEBUG_MODE_ON){
+                if(this.userList.contains(user.getUid())) {
+                    this.userList.remove(user.getUid());
+                }
+            }
             Log.d(TAG, userList.toString());
         } catch (Exception e){
             Log.e(TAG, e.toString());
