@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -106,17 +108,18 @@ public class ChatRoom extends FragmentActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void addMessageToBoard(Message message){
-        String messageText = message.getMessageBody();
-        MessageFragment messageFragment = MessageFragment.newInstance(message.getMessageAuthor(), messageText, message.isUserIsSender());
-        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, messageFragment);
-        transaction.commit();
-        //scroll to bottom of scroll view with smooth animation
-        ScrollView scrollView = findViewById(R.id.chatroom_scroll);
-        LinearLayout scrollLinearLayout = findViewById(R.id.fragment_holder);
-        ObjectAnimator scrollAnimation = ObjectAnimator.ofInt(scrollView, "scrollY", scrollLinearLayout.getBottom());
-        scrollAnimation.setDuration(1000);
-        scrollAnimation.start();
-
+        if(!getSupportFragmentManager().isDestroyed()){
+            String messageText = message.getMessageBody();
+            MessageFragment messageFragment = MessageFragment.newInstance(message.getMessageAuthor(), messageText, message.isUserIsSender());
+            FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, messageFragment);
+            transaction.commit();
+            //scroll to bottom of scroll view with smooth animation
+            ScrollView scrollView = findViewById(R.id.chatroom_scroll);
+            LinearLayout scrollLinearLayout = findViewById(R.id.fragment_holder);
+            ObjectAnimator scrollAnimation = ObjectAnimator.ofInt(scrollView, "scrollY", scrollLinearLayout.getBottom());
+            scrollAnimation.setDuration(1000);
+            scrollAnimation.start();
+        }
     }
 
 
@@ -133,5 +136,49 @@ public class ChatRoom extends FragmentActivity {
                 addMessageToBoard(message);
             }
         };
+    }
+
+    /**
+     * Called when activity switch happens
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
+            leaveGroupDialog();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    private void leaveGroupDialog(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        final TextView leaveGroupWarning = new TextView(this);
+        leaveGroupWarning.setText("Do you want to leave this group?");
+        dialogBuilder.setView(leaveGroupWarning);
+        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                groupChatManager.leaveGroup().addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        finish();
+                    }
+                });
+            }
+        });
+
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialogBuilder.show();
     }
 }

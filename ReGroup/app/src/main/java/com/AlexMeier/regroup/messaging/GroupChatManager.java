@@ -82,12 +82,13 @@ public abstract class GroupChatManager {
         user = mAuth.getCurrentUser();
         Fire.stream().initialize(context, new RealtimeService());
 
+
         Disposable d = Fire.stream().getSendableEvents().getMessages().pastAndNewEvents().subscribe(messageEvent -> {
             if(messageEvent.isAdded()){
                 //message recieved
                 String sender = "Unknown UID";
                 String uid = messageEvent.get().toTextMessage().getFrom();
-                if(userDict.containsKey(uid)){
+                if(userDict != null && userDict.containsKey(uid)){
                     sender = userDict.get(uid).getUserName();
                 }
                 Message message = new Message(messageEvent.get().toTextMessage().getText(), sender, false);
@@ -108,6 +109,33 @@ public abstract class GroupChatManager {
                 Fire.stream().sendMessageWithText(userID, messageBody).subscribe();
             }
         }
+    }
+
+    /**
+     * Cleans up current group chat.  Call before leaving group activity
+     */
+    public Task leaveGroup(){
+        messagingService.clearSubscriberCallbacks();
+        //unsubscribe from group changes
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(groupID).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "Unsubscribed from group metadata update messages");
+                } else {
+                    Log.e(TAG, "Failed to unsubscribe from group metadata messages: " + task.getException().toString());
+                }
+            }
+        });
+
+
+        userList = new ArrayList<>();
+        userDict = new HashMap<>();
+
+        //call leaveGroup api
+        return GroupChatAPI.leaveGroup(groupID);
+
+
     }
 
     /**
@@ -142,9 +170,4 @@ public abstract class GroupChatManager {
             Log.e(TAG, e.toString());
         }
     }
-
-
-
-
-
 }

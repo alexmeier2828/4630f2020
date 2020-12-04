@@ -37,4 +37,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         this.SubscriberCallbacks.add(callback);
 
     }
+
+    public void clearSubscriberCallbacks(){
+        this.SubscriberCallbacks = new ArrayList<>();
+    }
 }

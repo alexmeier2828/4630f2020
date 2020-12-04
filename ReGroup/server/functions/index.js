@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 const Promise = require("promise");
 const { Message } = require('firebase-functions/lib/providers/pubsub');
 const { reject, resolve } = require('promise');
+const { database } = require('firebase-admin');
+const { user } = require('firebase-functions/lib/providers/auth');
 admin.initializeApp(); 
 
 // // Create and Deploy Your First Cloud Functions
@@ -83,9 +85,31 @@ exports.joinGroup = functions.https.onRequest(async (request, response) => {
 
 });
 
+/**
+ * @argument groupID, 
+ * @argument userID
+ */
 exports.leaveGroup = functions.https.onRequest((request, response) => {
-  functions.logger.info("User requested new group");
+  const groupID = request.body.data.groupID;
+  const userID = request.body.data.userID;
+  functions.logger.info("User requeted to leave group" + groupID);
 
+  var groupRef = admin.database().ref('groups/' + groupID);
+  return groupRef.once('value', (snapshot) => {
+    var data = snapshot.val();
+    var newMembers = []
+    data.members.forEach(member => {
+      if(member !== userID){
+        newMembers.push(member)
+      }
+    });
+    if(newMembers.length > 0){
+      data.members = newMembers;
+      return groupRef.set(data);
+    } else{
+      return groupRef.remove();
+    }
+  });
 });
 
 exports.joinIndividualChat = functions.https.onRequest((request, response) => {

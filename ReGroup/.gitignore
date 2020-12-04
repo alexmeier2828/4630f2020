@@ -100,3 +100,5 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+package-lock.json
+package_lock.json
