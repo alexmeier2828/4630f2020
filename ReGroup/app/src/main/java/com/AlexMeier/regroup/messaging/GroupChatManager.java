@@ -6,7 +6,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentManager;
 
+import com.AlexMeier.regroup.profile.ProfileData;
+import com.AlexMeier.regroup.profile.ProfileUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +22,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -33,7 +38,8 @@ import io.reactivex.disposables.Disposable;
 public abstract class GroupChatManager {
     private final static String TAG = "GROUP_CHAT_MANAGER";
     private boolean DEBUG_MODE_ON = false;                  //setting to true enables server echo
-    private ArrayList<String> userList;
+    private List<String> userList;
+    private HashMap<String, ProfileData> userDict;
     private String groupID;
     private MyFirebaseMessagingService messagingService;
     private FirebaseUser user;
@@ -42,6 +48,10 @@ public abstract class GroupChatManager {
     public GroupChatManager(Context context, GroupChatResponse groupChatResponse) {
         userList = groupChatResponse.getMembers();  //make copy of userlist
         groupID = groupChatResponse.getName();
+
+        ProfileUtil.getUserDict(userList, stringProfileDataDictionary -> {
+            userDict = stringProfileDataDictionary;
+        });
         //subscribe to group
 
         FirebaseMessaging.getInstance().subscribeToTopic(groupID)
@@ -75,7 +85,12 @@ public abstract class GroupChatManager {
         Disposable d = Fire.stream().getSendableEvents().getMessages().pastAndNewEvents().subscribe(messageEvent -> {
             if(messageEvent.isAdded()){
                 //message recieved
-                Message message = new Message(messageEvent.get().toTextMessage().getText(), messageEvent.get().toTextMessage().getFrom(), false);
+                String sender = "Unknown UID";
+                String uid = messageEvent.get().toTextMessage().getFrom();
+                if(userDict.containsKey(uid)){
+                    sender = userDict.get(uid).getUserName();
+                }
+                Message message = new Message(messageEvent.get().toTextMessage().getText(), sender, false);
                 onMessageReceived(message);
             }
         });
@@ -117,11 +132,17 @@ public abstract class GroupChatManager {
                     this.userList.remove(user.getUid());
                 }
             }
+
+            //update profile mapping
+            ProfileUtil.getUserDict(userList, stringProfileDataDictionary -> {
+                userDict = stringProfileDataDictionary;
+            });
             Log.d(TAG, userList.toString());
         } catch (Exception e){
             Log.e(TAG, e.toString());
         }
     }
+
 
 
 

@@ -8,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/message_card"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:cardBackgroundColor="#DCCECE"
@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:maxWidth="250dp"
                 android:text="@string/message_fragment_placeholder_text" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

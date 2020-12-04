@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         userName = mAuth.getCurrentUser().getDisplayName();
 
         //attempt to retrieve profile data
-        ProfileUtil.getProfile(mAuth.getCurrentUser(), profileData -> {
+        ProfileUtil.getProfile(mAuth.getCurrentUser().getUid(), profileData -> {
             //if this is a new profile, set it accordingly
             if(profileData.getUserName() != null){
                 userName = profileData.getUserName();

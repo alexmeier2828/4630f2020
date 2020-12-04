@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class ChatRoom extends FragmentActivity {
     private static final String TAG = "CHAT_ROOM";
     private int scrollerID;
+    private FragmentManager fragmentManager;
     FirebaseUser user;
     FirebaseAuth mAuth;
     GroupChatManager groupChatManager;
@@ -40,7 +41,7 @@ public class ChatRoom extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
-
+        fragmentManager = getSupportFragmentManager();
         //initialize conversation
         mAuth = FirebaseAuth.getInstance();
         GroupChatAPI.joinGroup(mAuth).addOnCompleteListener(new OnCompleteListener<GroupChatResponse>() {
@@ -73,24 +74,10 @@ public class ChatRoom extends FragmentActivity {
                     }
                 }
         );
+
+        //set keyboard send button visible
         messageEditor.setImeOptions(EditorInfo.IME_ACTION_SEND);
         messageEditor.setRawInputType(InputType.TYPE_CLASS_TEXT);
-
-//
-//        //bugfix - prime the back stack -- no idea why this is required
-//        Fragment fragment = MessageFragment.newInstance("", "", true);
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
-//        fragment = message_spacer.newInstance("1", "");
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
-//        fragment = message_spacer.newInstance("2", "");
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
-//        fragment = message_spacer.newInstance("3", "");
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
-//        fragment = message_spacer.newInstance("4", "");
-//        this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commitNow();
-////
-//         this.getSupportFragmentManager().executePendingTransactions();
-////        findViewById(R.id.fragment_holder)
      }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -121,8 +108,7 @@ public class ChatRoom extends FragmentActivity {
     public void addMessageToBoard(Message message){
         String messageText = message.getMessageBody();
         MessageFragment messageFragment = MessageFragment.newInstance(message.getMessageAuthor(), messageText, message.isUserIsSender());
-        FragmentManager fragmentManager= this.getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction().add(R.id.fragment_holder, messageFragment);
+        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, messageFragment);
         transaction.commit();
         //scroll to bottom of scroll view with smooth animation
         ScrollView scrollView = findViewById(R.id.chatroom_scroll);
