@@ -140,31 +140,36 @@ public class ProfileUtil {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void getUserDict(List<String> uidList, Consumer<HashMap<String,ProfileData>> onSuccessCallback){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef =  db.collection(USER_DATA);
 
         //createQuery
-        usersRef.whereIn(FieldPath.documentId(), uidList).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            QuerySnapshot snapshot = task.getResult();
-                            HashMap<String, ProfileData> userList = new HashMap<>();
+        if(uidList.size() > 0){
+            usersRef.whereIn(FieldPath.documentId(), uidList).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                QuerySnapshot snapshot = task.getResult();
+                                HashMap<String, ProfileData> userList = new HashMap<>();
 
-                            for (DocumentSnapshot document:snapshot
-                            ) {
-                                userList.put(document.getId(),new ProfileData(document));
+                                for (DocumentSnapshot document:snapshot
+                                ) {
+                                    userList.put(document.getId(),new ProfileData(document));
+                                }
+                                //return the remaining copy of user data
+                                onSuccessCallback.accept(userList);
+
+                            } else {
+                                Log.d(TAG, "Error retrieving user data from firestore", task.getException());
                             }
-                            //return the remaining copy of user data
-                            onSuccessCallback.accept(userList);
-
-                        } else {
-                            Log.d(TAG, "Error retrieving user data from firestore", task.getException());
                         }
-                    }
-                });
+                    });
+        } else {
+            onSuccessCallback.accept(new HashMap<>());
+        }
     }
 }

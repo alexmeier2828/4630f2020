@@ -8,13 +8,6 @@ const { database } = require('firebase-admin');
 const { user } = require('firebase-functions/lib/providers/auth');
 admin.initializeApp(); 
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
-});
 
 
 //chat group creation
@@ -96,26 +89,43 @@ exports.leaveGroup = functions.https.onRequest((request, response) => {
 
   var groupRef = admin.database().ref('groups/' + groupID);
   return groupRef.once('value', (snapshot) => {
+  
+    
     var data = snapshot.val();
+    if(data === null){
+      response.send("done");
+      return null;
+    }
     var newMembers = []
     data.members.forEach(member => {
       if(member !== userID){
-        newMembers.push(member)
+        newMembers.push(member);
       }
     });
     if(newMembers.length > 0){
       data.members = newMembers;
-      return groupRef.set(data);
+      data.size = newMembers.length;
+      response.send("done");
+      return groupRef.set(data)
     } else{
-      return groupRef.remove();
+      response.send("done");
+      return groupRef.remove()
     }
-  });
+  },(error) =>{
+    functions.logger(error);
+  }).catch((error)=>{
+    response.send("done");
+    return;
+  })
 });
 
-exports.joinIndividualChat = functions.https.onRequest((request, response) => {
-  functions.logger.info("User requested new group");
+// /**
+//  * TODO: if I get to individual chats, this will make that possible
+//  */
+// exports.joinIndividualChat = functions.https.onRequest((request, response) => {
+//   functions.logger.info("User requested new group");
 
-});
+// });
 
 
 

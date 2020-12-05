@@ -1,5 +1,6 @@
 package com.AlexMeier.regroup.messaging;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
@@ -43,6 +45,7 @@ public abstract class GroupChatManager {
     private String groupID;
     private MyFirebaseMessagingService messagingService;
     private FirebaseUser user;
+    private BroadcastReceiver receiver;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GroupChatManager(Context context, GroupChatResponse groupChatResponse) {
@@ -68,13 +71,12 @@ public abstract class GroupChatManager {
         });
 
 
-        messagingService = new MyFirebaseMessagingService();
-        messagingService.addSubscriberCallback(new Consumer<RemoteMessage>() {
-            @Override
-            public void accept(RemoteMessage remoteMessage) {
-                updateGroup(remoteMessage);
-            }
-        });
+//        messagingService.addSubscriberCallback(new Consumer<RemoteMessage>() {
+//            @Override
+//            public void accept(RemoteMessage remoteMessage) {
+//                updateGroup(remoteMessage);
+//            }
+//        });
 
 
         //firestream
@@ -96,6 +98,17 @@ public abstract class GroupChatManager {
             }
         });
 
+        if(!DEBUG_MODE_ON){
+            if(this.userList.contains(user.getUid())) {
+                this.userList.removeIf(uid -> uid.equals(user.getUid()));
+
+            }
+        }
+        //update profile mapping
+        ProfileUtil.getUserDict(userList, stringProfileDataDictionary -> {
+            userDict = stringProfileDataDictionary;
+            welcomeMessage();
+        });
     }
 
     /**
@@ -115,7 +128,6 @@ public abstract class GroupChatManager {
      * Cleans up current group chat.  Call before leaving group activity
      */
     public Task leaveGroup(){
-        messagingService.clearSubscriberCallbacks();
         //unsubscribe from group changes
         FirebaseMessaging.getInstance().unsubscribeFromTopic(groupID).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -134,8 +146,6 @@ public abstract class GroupChatManager {
 
         //call leaveGroup api
         return GroupChatAPI.leaveGroup(groupID);
-
-
     }
 
     /**
@@ -149,25 +159,55 @@ public abstract class GroupChatManager {
    Private methods
     */
 
-    private void updateGroup(RemoteMessage message){
-        String messageString = message.getData().toString();
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void updateGroup(String message){
 
         try {
-            JSONObject messageJson = new JSONObject(messageString);
-            this.userList = (ArrayList<String>) messageJson.get("members");
+            JSONObject messageJson = new JSONObject(message);
+            JSONArray jsonUserList = messageJson.getJSONObject("group").getJSONArray("members");
+            ArrayList<String> newUserList = new ArrayList<>();
+            for(int i = 0; i < jsonUserList.length(); i++){
+                newUserList.add(jsonUserList.getString(i));
+            }
+            this.userList = newUserList;
             if(!DEBUG_MODE_ON){
                 if(this.userList.contains(user.getUid())) {
-                    this.userList.remove(user.getUid());
+                    this.userList.removeIf(uid -> uid.equals(user.getUid()));
+
                 }
             }
+
 
             //update profile mapping
             ProfileUtil.getUserDict(userList, stringProfileDataDictionary -> {
                 userDict = stringProfileDataDictionary;
+                welcomeMessage();
             });
+
+
             Log.d(TAG, userList.toString());
+
+
+
         } catch (Exception e){
             Log.e(TAG, e.toString());
+        }
+    }
+
+    private void welcomeMessage(){
+        if(userList.size() > 0){
+
+            String userString = "\n";
+            for (String user: userList
+            ) {
+                if(userDict.containsKey(user)){
+                    userString += userDict.get(user).getUserName() +"\n";
+                }
+
+            }
+            onMessageReceived(new Message("The following users are now in the group: " + userString, "ReGroup", false));
+        } else {
+            onMessageReceived(new Message("The group is empty... Stick around and someone might join!", "ReGroup", false));
         }
     }
 }

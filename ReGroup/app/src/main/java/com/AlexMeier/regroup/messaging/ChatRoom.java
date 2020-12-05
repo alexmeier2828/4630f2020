@@ -5,10 +5,15 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -27,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.RemoteMessage;
 
 public class ChatRoom extends FragmentActivity {
     private static final String TAG = "CHAT_ROOM";
@@ -35,6 +41,8 @@ public class ChatRoom extends FragmentActivity {
     FirebaseUser user;
     FirebaseAuth mAuth;
     GroupChatManager groupChatManager;
+    LocalBroadcastManager mLocalBroadcastManager;
+    BroadcastReceiver broadcastReceiver;
 
     GroupChatResponse currentGroup;
 
@@ -80,7 +88,23 @@ public class ChatRoom extends FragmentActivity {
         //set keyboard send button visible
         messageEditor.setImeOptions(EditorInfo.IME_ACTION_SEND);
         messageEditor.setRawInputType(InputType.TYPE_CLASS_TEXT);
-     }
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                groupChatManager.updateGroup((String) intent.getExtras().get("message"));
+            }
+        };
+
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyFirebaseMessagingService.GROUP_UPDATE);
+        mLocalBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
+    }
+
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void sendMessage(){
@@ -164,6 +188,7 @@ public class ChatRoom extends FragmentActivity {
         dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
                 groupChatManager.leaveGroup().addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
@@ -180,5 +205,11 @@ public class ChatRoom extends FragmentActivity {
             }
         });
         dialogBuilder.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mLocalBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }

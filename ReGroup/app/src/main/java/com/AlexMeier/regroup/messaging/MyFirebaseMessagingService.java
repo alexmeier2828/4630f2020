@@ -7,6 +7,7 @@ import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -17,6 +18,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    public static final String GROUP_UPDATE = "group_update";
     private List<Consumer<RemoteMessage>> SubscriberCallbacks;
     public MyFirebaseMessagingService() {
         SubscriberCallbacks = new ArrayList<Consumer<RemoteMessage>>();
@@ -29,6 +31,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
              ) {
             callback.accept(remoteMessage);
         }
+
+        Intent intent = new Intent(this.GROUP_UPDATE);
+        intent.putExtra("message", remoteMessage.getData().toString());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
 
