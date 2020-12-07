@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.AlexMeier.regroup.R;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -63,7 +64,10 @@ public class ProfileActivity extends AppCompatActivity {
             StorageReference imageReference = profileData.getImageReference();
 
             if(imageReference != null){
-                Glide.with(this).load(imageReference).into((ImageView)findViewById(R.id.profile_picture));
+                Glide.with(this)
+                        .load(imageReference)
+                        .signature(new ObjectKey(profileData))
+                        .into((ImageView)findViewById(R.id.profile_picture));
             }
         });
     }

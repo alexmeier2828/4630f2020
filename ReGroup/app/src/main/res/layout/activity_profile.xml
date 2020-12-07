@@ -20,12 +20,23 @@
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profile_placeholder_text" />
+        android:layout_margin="10dp"
+        android:text="@string/profile_placeholder_text"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="370dp"
+        android:layout_height="10dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/space_line" />
 
     <TextView
         android:id="@+id/profile_body_text"
         android:layout_width="match_parent"
         android:layout_height="251dp"
-        android:text="@string/profile_body_placeholder_text" />
+        android:layout_margin="10dp"
+        android:text="@string/profile_body_placeholder_text"
+        android:textSize="17sp" />
 
 </LinearLayout>

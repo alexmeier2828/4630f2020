@@ -2,7 +2,7 @@ package com.AlexMeier.regroup.messaging;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -28,13 +30,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.AlexMeier.regroup.R;
+import com.AlexMeier.regroup.profile.ProfileData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.messaging.RemoteMessage;
 
-public class ChatRoom extends FragmentActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ChatRoom extends AppCompatActivity {
     private static final String TAG = "CHAT_ROOM";
     private int scrollerID;
     private FragmentManager fragmentManager;
@@ -205,6 +210,37 @@ public class ChatRoom extends FragmentActivity {
             }
         });
         dialogBuilder.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chatroom_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.view_profiles:
+                profileViewer();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void profileViewer() {
+        HashMap<String, ProfileData> profiles= groupChatManager.getGroupMemberProfiles();
+
+        ArrayList<String> uids = new ArrayList<>();
+        for (String uid: profiles.keySet()
+             ) {
+            uids.add(uid);
+        }
+        Intent intent = new Intent(this, UserList.class);
+        Bundle b = new Bundle();
+        b.putStringArrayList("users", uids);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 
     @Override

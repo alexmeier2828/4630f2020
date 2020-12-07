@@ -148,11 +148,16 @@ public abstract class GroupChatManager {
         return GroupChatAPI.leaveGroup(groupID);
     }
 
+    public HashMap<String, ProfileData> getGroupMemberProfiles(){
+        return userDict;
+    }
+
     /**
      * Called when message is received from group chat;
      * @param message message with metadata
      */
     public abstract void onMessageReceived(Message message);
+
 
 
    /*
