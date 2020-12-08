@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_margin="10dp"
-        app:cardBackgroundColor="#73B6EC"
+        android:outlineAmbientShadowColor="#000000"
+        app:cardBackgroundColor="#77BBF3"
         app:cardCornerRadius="10dp"
         app:contentPadding="5dp">
 

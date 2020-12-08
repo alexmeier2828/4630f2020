@@ -65,7 +65,7 @@ public class ProfileCard extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile_bar, container, false);
+        View view = inflater.inflate(R.layout.fragment_profilec_card, container, false);
         ProfileUtil.getProfile(mUserID, (profile)->{
             final TextView profileName = view.findViewById(R.id.user_name);
             final TextView profileBody = view.findViewById(R.id.profile_body);

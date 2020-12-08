@@ -55,9 +55,9 @@ public class ProfileActivity extends AppCompatActivity {
                 userName = profileData.getUserName();
             }
             userProfileBody = profileData.getProfileBody();
-            final TextView profileNameTextView = findViewById(R.id.profile_name);
+            final TextView profileNameTextView = findViewById(R.id.user_name);
             profileNameTextView.setText(userName);
-            final TextView profileBodyTextView = findViewById(R.id.profile_body_text);
+            final TextView profileBodyTextView = findViewById(R.id.profile_body);
             profileBodyTextView.setText(userProfileBody);
 
             //if it exists show profile picture
@@ -154,7 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateProfileText(String text) {
         userProfileBody = text;
         //update local body text
-        final TextView bodyText = findViewById(R.id.profile_body_text);
+        final TextView bodyText = findViewById(R.id.profile_body);
         bodyText.setText(userProfileBody);
 
         //update firebase

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:cardBackgroundColor="#DCCECE"
+        app:cardBackgroundColor="@color/purple_message_bubble"
         app:cardCornerRadius="10dp"
         app:contentPadding="5dp">
 
@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/message_fragment_placeholder_text"
+                android:textColor="#000000"
                 android:textSize="10sp" />
 
             <TextView
@@ -33,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:maxWidth="250dp"
-                android:text="@string/message_fragment_placeholder_text" />
+                android:text="@string/message_fragment_placeholder_text"
+                android:textColor="#000000" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
