@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.AlexMeier.regroup.R;
 import com.AlexMeier.regroup.profile.ProfileData;
@@ -222,7 +224,14 @@ public class ChatRoom extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.view_profiles:
-                profileViewer();
+                if(groupChatManager.getGroupMemberProfiles().size() > 0 ){
+                    profileViewer();
+                } else {
+                    Toast warning = Toast.makeText(this, "The group is empty!", Toast.LENGTH_LONG);
+                    warning.setGravity(Gravity.TOP, 0,0);
+                    warning.show();
+                }
+
             default:
                 return super.onOptionsItemSelected(item);
         }

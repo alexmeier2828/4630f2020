@@ -5,15 +5,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.AlexMeier.regroup.R;
 import com.bumptech.glide.Glide;
@@ -31,14 +36,17 @@ import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "PROFILE_ACTIVITY";
     private static final int RESULT_PICK_IMAGE = 10;
+    private static final int RESULT_OPEN_CAMERA = 11;
+    private ProfileData currentProfile;
     private FirebaseAuth mAuth; //user information
     private String userName;
     private String userProfileBody;
     private Uri profilePictureUri;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
                         .signature(new ObjectKey(profileData))
                         .into((ImageView)findViewById(R.id.profile_picture));
             }
+
+            currentProfile = profileData;
         });
     }
 
@@ -96,9 +106,42 @@ public class ProfileActivity extends AppCompatActivity {
      * prompts the user to update profile picture
      */
     private void editProfilePicture() {
-        Intent openGallery = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(openGallery, RESULT_PICK_IMAGE);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        final CharSequence[] dialogOptions = {"Take Photo", "Choose From Gallery"};
+        dialogBuilder.setTitle("Upload A Picture");
+        Context context = this;
+
+        //let user choose between camera and picking from the gallery
+        dialogBuilder.setItems(dialogOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(dialogOptions[which].equals("Choose From Gallery")){
+                    Intent openGallery = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    startActivityForResult(openGallery, RESULT_PICK_IMAGE);
+                }else if(dialogOptions[which].equals("Take Photo")){
+                    try {
+                        File photo = new File(getExternalMediaDirs()[0], "photo.jpg");
+                        if (photo.exists() == false) {
+                            photo.getParentFile().mkdirs();
+                            photo.createNewFile();
+
+                        } else {
+                            photo.delete();
+                            photo.createNewFile();
+                        }
+                        Intent openCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        openCamera.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, getApplicationContext().getPackageName() + ".provider", photo));
+                        startActivityForResult(openCamera, RESULT_OPEN_CAMERA);
+                    }catch(Exception e){
+                        Log.e(TAG, "Failed to open image file" + e);
+                        Toast.makeText(context, "Open Camera Failed", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }
+        });
+        dialogBuilder.show();
     }
 
     @Override
@@ -106,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == RESULT_PICK_IMAGE){
             updateProfilePicture(data.getData());
+        } else if(resultCode == RESULT_OK && requestCode == RESULT_OPEN_CAMERA){
+            updateProfilePicture(Uri.fromFile( new File(getExternalMediaDirs()[0], "photo.jpg")));
         }
     }
 
@@ -158,6 +203,7 @@ public class ProfileActivity extends AppCompatActivity {
         bodyText.setText(userProfileBody);
 
         //update firebase
-        ProfileUtil.updateCurrentUserProfile(new ProfileData(userName, userProfileBody));
+        currentProfile.setProfileBody(text);
+        ProfileUtil.updateCurrentUserProfile(currentProfile);
     }
 }

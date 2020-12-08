@@ -36,4 +36,6 @@
     <string name="new_roup">New Group</string>
     <string name="saved_profiles">Saved Profiles</string>
     <string name="profile_button">Profile</string>
+    <string name="text_message">Text Message...</string>
+    <string name="profile_description">Profile Description...</string>
 </resources>
