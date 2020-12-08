@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class MessageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("MessageFragment", "oncreate" + (savedInstanceState == null));
         if (getArguments() != null) {
             mSender = getArguments().getString(ARG_PARAM1);
             mBody = getArguments().getString(ARG_PARAM2);
@@ -72,6 +74,7 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d("MessageFragment", "oncreateView");
         int layout;
         if(mSenderIsYou){
             layout = R.layout.fragment_message_from_sender;

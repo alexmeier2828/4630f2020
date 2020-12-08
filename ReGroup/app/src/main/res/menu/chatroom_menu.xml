@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/view_profiles"
+        android:icon="@drawable/fui_ic_anonymous_white_24dp"
+        android:title="@string/view_group_members"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -42,6 +42,9 @@ public class ProfileData {
         return profileBody;
     }
 
+    public void setProfileBody(String newBody){
+        this.profileBody = newBody;
+    }
     /**
      * returns a firebase storage reference for the profile picture
      * @return
