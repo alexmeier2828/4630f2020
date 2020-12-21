@@ -57,16 +57,9 @@ public class MyPortfolioFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_portfolio, container, false);
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        TableLayout table = findViewById(R.id.StockTable);
+        // Inflate the layout for this fragment;
+        View view = inflater.inflate(R.layout.fragment_my_portfolio, container, false);
+        TableLayout table = view.findViewById(R.id.StockTable);
         for (Stock s:this.stocks
         ) {
             TableRow tr = new TableRow(this.getActivity());
@@ -83,7 +76,10 @@ public class MyPortfolioFragment extends Fragment {
             tr.addView(price);
             table.addView(tr);
         }
+        return view;
+
     }
+
 
     public void addStock(Stock stock){
         this.stocks.add(stock);
